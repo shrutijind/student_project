@@ -1,8 +1,6 @@
-
-
-# Create your views here.
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from .models import Student, LeaveRequest
 
 @login_required
@@ -15,7 +13,15 @@ def dashboard(request):
             'leave_requests': leave_requests
         })
     else:
-        student = get_object_or_404(Student, user=request.user)
+        try:
+            student = Student.objects.get(user=request.user)
+        except Student.DoesNotExist:
+            return HttpResponse(
+                "<h3>No Student Profile Found</h3>"
+                "<p>Your user account is not linked to a Student profile yet. "
+                "Please log in as an Admin at <a href='/admin/'>/admin/</a> and create a Student record for this user.</p>"
+            )
+            
         leave_requests = LeaveRequest.objects.filter(student=student).order_by('-submitted_at')
         return render(request, 'students/student_dashboard.html', {
             'student': student,
@@ -24,7 +30,11 @@ def dashboard(request):
 
 @login_required
 def apply_leave(request):
-    student = get_object_or_404(Student, user=request.user)
+    try:
+        student = Student.objects.get(user=request.user)
+    except Student.DoesNotExist:
+        return redirect('dashboard')
+        
     if request.method == 'POST':
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
