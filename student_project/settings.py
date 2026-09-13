@@ -12,6 +12,16 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 # Allow Heroku app domain
 ALLOWED_HOSTS = ['*']
+# Required Core Django Apps + Custom App
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'students',  # Custom app
+]
 
 # WhiteNoise Middleware (Must be right after SecurityMiddleware)
 MIDDLEWARE = [
