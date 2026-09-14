@@ -1,27 +1,43 @@
 {% extends 'students/base.html' %}
+
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Apply for Leave</h4>
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h4 class="card-title mb-0">Apply for Leave</h4>
             </div>
-            <div class="card-body">
-                <form method="post">
+            <div class="card-body p-4">
+                <form method="POST">
                     {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <div class="mb-3">
-                        <label class="form-label">Start Date</label>
-                        <input type="date" name="start_date" class="form-control" required>
+                        <label for="id_start_date" class="form-label">Start Date <span class="text-danger">*</span></label>
+                        {{ form.start_date }}
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label">End Date</label>
-                        <input type="date" name="end_date" class="form-control" required>
+                        <label for="id_end_date" class="form-label">End Date <span class="text-danger">*</span></label>
+                        {{ form.end_date }}
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label">Reason</label>
-                        <textarea name="reason" class="form-control" rows="4" required></textarea>
+                        <label for="id_reason" class="form-label">Reason for Absence <span class="text-danger">*</span></label>
+                        {{ form.reason }}
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Submit Application</button>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-success">Submit Application</button>
+                    </div>
                 </form>
             </div>
         </div>

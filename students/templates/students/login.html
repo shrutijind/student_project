@@ -1,23 +1,28 @@
 {% extends 'students/base.html' %}
+
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center my-5">
     <div class="col-md-4">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white text-center">
-                <h4 class="mb-0">Login</h4>
-            </div>
-            <div class="card-body">
-                <form method="post">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h3 class="card-title text-center mb-4 font-weight-bold">Account Login</h3>
+                
+                <form method="POST" action="{% url 'login' %}" novalidate>
                     {% csrf_token %}
+                    
                     <div class="mb-3">
-                        <label class="form-label">Username</label>
-                        <input type="text" name="username" class="form-control" required>
+                        <label for="id_username" class="form-label font-weight-semibold">Username <span class="text-danger">*</span></label>
+                        <input type="text" name="username" class="form-control" id="id_username" placeholder="Enter username" required>
+                        <div class="invalid-feedback">Username is required.</div>
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" required>
+                        <label for="id_password" class="form-label font-weight-semibold">Password <span class="text-danger">*</span></label>
+                        <input type="password" name="password" class="form-control" id="id_password" placeholder="Enter password" required>
+                        <div class="invalid-feedback">Password is required.</div>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Sign In</button>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 mt-2">Sign In</button>
                 </form>
             </div>
         </div>
