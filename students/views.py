@@ -37,16 +37,28 @@ def dashboard(request):
             'students': students
         })
     else:
-        student = get_object_or_404(Student, user=request.user)
-        my_requests = LeaveRequest.objects.filter(student=student)
-        return render(request, 'students/parent_dashboard.html', {
-            'my_requests': my_requests,
-            'student': student
-        })
+        try:
+            student = Student.objects.get(user=request.user)
+            my_requests = LeaveRequest.objects.filter(student=student)
+            return render(request, 'students/parent_dashboard.html', {
+                'my_requests': my_requests,
+                'student': student
+            })
+        except Student.DoesNotExist:
+            messages.warning(request, "No student profile is currently linked to your account.")
+            return render(request, 'students/parent_dashboard.html', {
+                'my_requests': [],
+                'student': None
+            })
 
 @login_required
 def apply_leave(request):
-    student = get_object_or_404(Student, user=request.user)
+    try:
+        student = Student.objects.get(user=request.user)
+    except Student.DoesNotExist:
+        messages.error(request, "You need an assigned student profile to apply for leave.")
+        return redirect('dashboard')
+
     if request.method == 'POST':
         form = LeaveRequestForm(request.POST)
         if form.is_valid():
@@ -62,7 +74,11 @@ def apply_leave(request):
 
 @login_required
 def cancel_leave(request, leave_id):
-    student = get_object_or_404(Student, user=request.user)
+    try:
+        student = Student.objects.get(user=request.user)
+    except Student.DoesNotExist:
+        return redirect('dashboard')
+
     leave_request = get_object_or_404(LeaveRequest, id=leave_id, student=student, status='Pending')
     leave_request.delete()
     messages.info(request, "Leave request cancelled.")
@@ -90,7 +106,7 @@ def toggle_attendance(request, student_id):
     student = get_object_or_404(Student, id=student_id)
     student.attendance_status = 'Absent' if student.attendance_status == 'Present' else 'Present'
     student.save()
-    messages.success(request, f"Updated attendance for {student.user.get_full_name() or student.user.username}.")
+    messages.success(request, f"Updated attendance for {student.name}.")
     return redirect('dashboard')
 
 @login_required
