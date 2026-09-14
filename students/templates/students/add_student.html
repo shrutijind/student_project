@@ -12,8 +12,8 @@
                     {% csrf_token %}
 
                     <div class="mb-3">
-                        <label for="id_user" class="form-label">Associated User Account <span class="text-danger">*</span></label>
-                        {{ form.user }}
+                        <label for="id_name" class="form-label">Student Name <span class="text-danger">*</span></label>
+                        {{ form.name }}
                     </div>
 
                     <div class="mb-3">
@@ -22,8 +22,13 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="id_grade" class="form-label">Grade / Class <span class="text-danger">*</span></label>
-                        {{ form.grade }}
+                        <label for="id_grade_level" class="form-label">Grade Level <span class="text-danger">*</span></label>
+                        {{ form.grade_level }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_user" class="form-label">Associated User Account</label>
+                        {{ form.user }}
                     </div>
 
                     <div class="mb-3">

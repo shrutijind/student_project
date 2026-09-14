@@ -23,10 +23,11 @@ class LeaveRequestForm(forms.ModelForm):
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ['user', 'roll_number', 'grade', 'attendance_status']
+        fields = ['user', 'name', 'roll_number', 'grade_level', 'attendance_status']
         widgets = {
-            'user': forms.Select(attrs={'class': 'form-select', 'required': True}),
-            'roll_number': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
-            'grade': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'user': forms.Select(attrs={'class': 'form-select'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'required': True, 'placeholder': 'Full Name'}),
+            'roll_number': forms.TextInput(attrs={'class': 'form-control', 'required': True, 'placeholder': 'Roll Number'}),
+            'grade_level': forms.TextInput(attrs={'class': 'form-control', 'required': True, 'placeholder': 'Grade Level'}),
             'attendance_status': forms.Select(attrs={'class': 'form-select'}),
         }
