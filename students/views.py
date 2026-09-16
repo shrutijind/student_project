@@ -131,3 +131,29 @@ def delete_student(request, student_id):
     student.delete()
     messages.warning(request, "Student record deleted.")
     return redirect('dashboard')
+
+@login_required
+def edit_leave(request, leave_id):
+    # Fetch the leave request or return 404
+    leave_request = get_object_or_404(LeaveRequest, id=leave_id)
+    
+    # Security Check: Ensure standard users can only edit their OWN pending requests
+    if not request.user.is_staff and leave_request.student.user != request.user:
+        messages.error(request, "You are not authorized to edit this request.")
+        return redirect('dashboard')
+        
+    # Prevent editing if the request has already been Approved or Rejected
+    if leave_request.status != 'Pending':
+        messages.warning(request, "You cannot edit a request that has already been processed.")
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = LeaveRequestForm(request.POST, instance=leave_request)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your leave request has been updated successfully!")
+            return redirect('dashboard')
+    else:
+        form = LeaveRequestForm(instance=leave_request)
+
+    return render(request, 'students/edit_leave.html', {'form': form, 'leave_request': leave_request})
