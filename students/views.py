@@ -161,3 +161,23 @@ def delete_student(request, student_id):
     student.delete()
     messages.success(request, "Student profile deleted successfully.")
     return redirect('dashboard')
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Student
+
+@login_required
+def toggle_attendance(request, student_id):
+    if not request.user.is_staff:
+        messages.error(request, "Unauthorized access.")
+        return redirect('dashboard')
+        
+    student = get_object_or_404(Student, id=student_id)
+    # Flip status between Present and Absent
+    student.attendance_status = 'Absent' if student.attendance_status == 'Present' else 'Present'
+    student.save()
+    
+    messages.success(request, f"Attendance status for {student.name} updated to {student.attendance_status}.")
+    return redirect('dashboard')
