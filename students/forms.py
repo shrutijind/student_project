@@ -1,5 +1,8 @@
 from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from .models import LeaveRequest, Student
+
 
 class LeaveRequestForm(forms.ModelForm):
     class Meta:
@@ -20,6 +23,7 @@ class LeaveRequestForm(forms.ModelForm):
             raise forms.ValidationError("End date cannot be earlier than start date.")
         return cleaned_data
 
+
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
@@ -31,3 +35,36 @@ class StudentForm(forms.ModelForm):
             'grade_level': forms.TextInput(attrs={'class': 'form-control', 'required': True, 'placeholder': 'Grade Level'}),
             'attendance_status': forms.Select(attrs={'class': 'form-select'}),
         }
+
+
+class StudentRegistrationForm(UserCreationForm):
+    first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'}))
+    last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'}))
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email Address'}))
+    roll_number = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Roll Number'}))
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Apply Bootstrap styling to standard user fields
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.email = self.cleaned_data['email']
+        
+        if commit:
+            user.save()
+            # Automatically create and link the Student profile
+            Student.objects.create(
+                user=user,
+                name=f"{user.first_name} {user.last_name}",
+                roll_number=self.cleaned_data['roll_number']
+            )
+        return user

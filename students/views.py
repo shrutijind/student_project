@@ -1,148 +1,70 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import LeaveRequest, Student
-from .forms import LeaveRequestForm, StudentForm
+from .forms import LeaveRequestForm, StudentRegistrationForm
 
-def student_login(request):
+
+def register(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
-        
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('dashboard')
-        else:
-            messages.error(request, "Invalid username or password.")
-    else:
-        form = AuthenticationForm()
-        
-    return render(request, 'students/login.html', {'form': form})
 
-def student_logout(request):
-    logout(request)
-    return redirect('login')
+    if request.method == 'POST':
+        form = StudentRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # Auto-login after successful registration
+            messages.success(request, f"Account created successfully! Welcome, {user.username}.")
+            return redirect('dashboard')
+    else:
+        form = StudentRegistrationForm()
+
+    return render(request, 'students/register.html', {'form': form})
+
 
 @login_required
 def dashboard(request):
+    # Staff / Admin view
     if request.user.is_staff:
-        pending_requests = LeaveRequest.objects.filter(status='Pending')
-        students = Student.objects.all()
-        return render(request, 'students/admin_dashboard.html', {
-            'pending_requests': pending_requests,
-            'students': students
-        })
-    else:
-        try:
-            student = Student.objects.get(user=request.user)
-            my_requests = LeaveRequest.objects.filter(student=student)
-            return render(request, 'students/parent_dashboard.html', {
-                'my_requests': my_requests,
-                'student': student
-            })
-        except Student.DoesNotExist:
-            messages.warning(request, "No student profile is currently linked to your account.")
-            return render(request, 'students/parent_dashboard.html', {
-                'my_requests': [],
-                'student': None
-            })
+        my_requests = LeaveRequest.objects.all().order_by('-start_date')
+        return render(request, 'students/admin_dashboard.html', {'my_requests': my_requests})
+    
+    # Student view
+    student = get_object_or_404(Student, user=request.user)
+    my_requests = LeaveRequest.objects.filter(student=student).order_by('-start_date')
+    return render(request, 'students/parent_dashboard.html', {
+        'student': student,
+        'my_requests': my_requests
+    })
+
 
 @login_required
 def apply_leave(request):
-    try:
-        student = Student.objects.get(user=request.user)
-    except Student.DoesNotExist:
-        messages.error(request, "You need an assigned student profile to apply for leave.")
-        return redirect('dashboard')
-
+    student = get_object_or_404(Student, user=request.user)
     if request.method == 'POST':
         form = LeaveRequestForm(request.POST)
         if form.is_valid():
-            leave_request = form.save(commit=False)
-            leave_request.student = student
-            leave_request.status = 'Pending'
-            leave_request.save()
+            leave = form.save(commit=False)
+            leave.student = student
+            leave.save()
             messages.success(request, "Leave request submitted successfully.")
             return redirect('dashboard')
     else:
         form = LeaveRequestForm()
     return render(request, 'students/apply_leave.html', {'form': form})
 
-@login_required
-def cancel_leave(request, leave_id):
-    try:
-        student = Student.objects.get(user=request.user)
-    except Student.DoesNotExist:
-        return redirect('dashboard')
-
-    leave_request = get_object_or_404(LeaveRequest, id=leave_id, student=student, status='Pending')
-    leave_request.delete()
-    messages.info(request, "Leave request cancelled.")
-    return redirect('dashboard')
-
-@login_required
-def update_leave_status(request, leave_id, status):
-    if not request.user.is_staff:
-        return redirect('dashboard')
-    leave_request = get_object_or_404(LeaveRequest, id=leave_id)
-    if status in ['Approved', 'Rejected']:
-        leave_request.status = status
-        leave_request.save()
-        if status == 'Approved':
-            student = leave_request.student
-            student.attendance_status = 'Absent'
-            student.save()
-        messages.success(request, f"Leave request marked as {status}.")
-    return redirect('dashboard')
-
-@login_required
-def toggle_attendance(request, student_id):
-    if not request.user.is_staff:
-        return redirect('dashboard')
-    student = get_object_or_404(Student, id=student_id)
-    student.attendance_status = 'Absent' if student.attendance_status == 'Present' else 'Present'
-    student.save()
-    messages.success(request, f"Updated attendance for {student.name}.")
-    return redirect('dashboard')
-
-@login_required
-def add_student(request):
-    if not request.user.is_staff:
-        return redirect('dashboard')
-    if request.method == 'POST':
-        form = StudentForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Student profile created successfully.")
-            return redirect('dashboard')
-    else:
-        form = StudentForm()
-    return render(request, 'students/add_student.html', {'form': form})
-
-@login_required
-def delete_student(request, student_id):
-    if not request.user.is_staff:
-        return redirect('dashboard')
-    student = get_object_or_404(Student, id=student_id)
-    student.delete()
-    messages.warning(request, "Student record deleted.")
-    return redirect('dashboard')
 
 @login_required
 def edit_leave(request, leave_id):
-    # Fetch the leave request or return 404
     leave_request = get_object_or_404(LeaveRequest, id=leave_id)
     
-    # Security Check: Ensure standard users can only edit their OWN pending requests
+    # Access Control Check
     if not request.user.is_staff and leave_request.student.user != request.user:
         messages.error(request, "You are not authorized to edit this request.")
         return redirect('dashboard')
         
-    # Prevent editing if the request has already been Approved or Rejected
+    # Prevent editing non-pending requests
     if leave_request.status != 'Pending':
         messages.warning(request, "You cannot edit a request that has already been processed.")
         return redirect('dashboard')
@@ -157,3 +79,14 @@ def edit_leave(request, leave_id):
         form = LeaveRequestForm(instance=leave_request)
 
     return render(request, 'students/edit_leave.html', {'form': form, 'leave_request': leave_request})
+
+
+@login_required
+def cancel_leave(request, leave_id):
+    leave_request = get_object_or_404(LeaveRequest, id=leave_id)
+    if leave_request.student.user == request.user and leave_request.status == 'Pending':
+        leave_request.delete()
+        messages.success(request, "Leave application canceled successfully.")
+    else:
+        messages.error(request, "Unable to cancel this leave application.")
+    return redirect('dashboard')
