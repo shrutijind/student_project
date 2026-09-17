@@ -1,10 +1,10 @@
-from django.urls import path
-from . import views
+from django.contrib import admin
+from django.urls import path, include
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('register/', views.register, name='register'),
-    path('dashboard/', views.dashboard, name='dashboard'),
-    path('leave/apply/', views.apply_leave, name='apply_leave'),
-    path('leave/edit/<int:leave_id>/', views.edit_leave, name='edit_leave'),
-    path('leave/cancel/<int:leave_id>/', views.cancel_leave, name='cancel_leave'),
+    path('admin/', admin.site.urls),
+    path('', include('students.urls')),  # Includes all student app routes
+    path('login/', auth_views.LoginView.as_view(template_name='students/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]

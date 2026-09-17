@@ -18,9 +18,14 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{% url 'dashboard' %}">
-                <img src="{% static 'students/images/logo.png' %}" alt="EduLeave Logo" width="30" height="30" class="d-inline-block align-text-top me-2" onerror="this.style.display='none'">
-                <strong>EduLeave</strong>
-            </a>
+    <img src="{% static 'students/images/logo.png' %}" 
+         alt="EduLeave Logo" 
+         width="30" 
+         height="30" 
+         class="d-inline-block align-text-top me-2" 
+         onerror="this.style.display='none'; this.remove();">
+    <span>EduLeave</span>
+</a>
             <div class="d-flex">
                 {% if user.is_authenticated %}
                     <span class="navbar-text me-3 text-white">Hello, {{ user.username }}</span>
