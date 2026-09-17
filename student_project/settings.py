@@ -81,9 +81,19 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files configuration for WhiteNoise
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
+
+# Where collectstatic will gather files for production/Heroku
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Where Django looks for your local static files during development
+STATICFILES_DIRS = [
+    BASE_DIR / 'students' / 'static',
+]
+
+# Enable WhiteNoise compression and caching
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Redirect Settings
 LOGIN_URL = 'login'
