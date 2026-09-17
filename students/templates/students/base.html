@@ -10,7 +10,7 @@
     
     <title>EduLeave</title>
     
-    <!-- PNG Favicon using eduleavelogo.png -->
+    <!-- PNG Favicon -->
     <link rel="icon" type="image/png" href="{% static 'students/images/eduleavelogo.png' %}">
     
     <!-- Bootstrap CSS -->
@@ -19,9 +19,9 @@
 <body class="d-flex flex-column min-vh-100 bg-light">
 
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container-fluid px-4">
-            <!-- Brand Link shifted left -->
+            <!-- Brand Logo & Name (Shifted Left) -->
             <a class="navbar-brand d-flex align-items-center fw-bold me-auto ms-0" href="{% url 'dashboard' %}">
                 <img src="{% static 'students/images/eduleavelogo.png' %}" 
                      alt="EduLeave Logo" 
@@ -35,24 +35,33 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             
+            <!-- Navbar Links -->
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
+                <ul class="navbar-nav ms-auto align-items-center gap-2">
+                    <!-- About Us link in Navbar -->
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-semibold me-2" href="#about-us">
+                            <i class="fa-solid fa-circle-info me-1"></i> About Us
+                        </a>
+                    </li>
+
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <span class="navbar-text me-3 text-white">Hello, {{ user.username }}</span>
+                            <span class="navbar-text me-2 text-white">Hello, {{ user.username }}</span>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                            <a class="nav-link text-white" href="{% url 'dashboard' %}">Dashboard</a>
                         </li>
-                        <li class="nav-item ms-lg-2">
+                        <li class="nav-item">
                             <form action="{% url 'logout' %}" method="post" class="d-inline">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
                             </form>
                         </li>
                     {% else %}
+                        <!-- Login & Register in Navbar -->
                         <li class="nav-item">
-                            <a class="btn btn-outline-light btn-sm me-2" href="{% url 'login' %}">Login</a>
+                            <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">Login</a>
                         </li>
                         <li class="nav-item">
                             <a class="btn btn-light text-primary btn-sm fw-semibold" href="{% url 'register' %}">Register</a>
@@ -63,8 +72,42 @@
         </div>
     </nav>
 
-    <!-- Main Content Area (flex-grow-1 pushes the footer down) -->
+    <!-- Main Content Area -->
     <main class="flex-grow-1">
+        
+        <!-- About Us & Student Image Banner (Shown to Logged-out Visitors) -->
+        {% if not user.is_authenticated %}
+            <section id="about-us" class="bg-white border-bottom shadow-sm mb-5">
+                <div class="container py-5">
+                    <div class="row align-items-center g-4">
+                        <!-- Student Image -->
+                        <div class="col-lg-6 text-center">
+                            <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80" 
+                                 alt="Students Campus" 
+                                 class="img-fluid rounded-4 shadow"
+                                 style="max-height: 360px; width: 100%; object-fit: cover;">
+                        </div>
+                        
+                        <!-- About Us Text -->
+                        <div class="col-lg-6">
+                            <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2 rounded-pill mb-3">
+                                <i class="fa-solid fa-graduation-cap me-1"></i> About EduLeave
+                            </span>
+                            <h2 class="fw-bold text-dark mb-3">Empowering Students & Faculty</h2>
+                            <p class="text-muted leading-relaxed mb-4">
+                                EduLeave is a digital academic leave management platform built to streamline leave applications, track approval statuses transparently, and eliminate paperwork for educational institutions.
+                            </p>
+                            <div class="d-flex gap-3">
+                                <a href="{% url 'login' %}" class="btn btn-primary px-4 fw-semibold">Login to Apply</a>
+                                <a href="{% url 'register' %}" class="btn btn-outline-primary px-4 fw-semibold">Create Account</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+
+        <!-- Content Block (Forms / Dashboards render here) -->
         <div class="container mb-5">
             {% if messages %}
                 {% for message in messages %}
@@ -80,7 +123,7 @@
         </div>
     </main>
 
-    <!-- Global Footer with Font Awesome Icons -->
+    <!-- Global Footer -->
     <footer class="bg-primary text-white py-4 mt-auto">
         <div class="container-fluid px-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
             <p class="mb-2 mb-md-0 opacity-75">&copy; {% now "Y" %} EduLeave Portal. All rights reserved.</p>
