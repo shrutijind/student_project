@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from .models import LeaveRequest, Student
 from .forms import LeaveRequestForm, StudentForm, StudentRegistrationForm
-
+from django.views.decorators.http import require_POST
 
 def login(request):
     if request.user.is_authenticated:
@@ -123,15 +123,18 @@ def update_leave_status(request, leave_id, status):
         messages.success(request, f"Leave request status updated to {status}.")
     return redirect('dashboard')
 
-
 @login_required
+@require_POST 
+ # Ensures state changes only happen via POST requests
 def toggle_attendance(request, student_id):
     if not request.user.is_staff:
         messages.error(request, "Unauthorized access.")
         return redirect('dashboard')
+        
     student = get_object_or_404(Student, id=student_id)
     student.attendance_status = 'Absent' if student.attendance_status == 'Present' else 'Present'
     student.save()
+    
     messages.success(request, f"Attendance status for {student.name} updated.")
     return redirect('dashboard')
 

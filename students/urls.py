@@ -14,5 +14,5 @@ urlpatterns = [
     path('attendance/toggle/<int:student_id>/', views.toggle_attendance, name='toggle_attendance'),
     path('student/add/', views.add_student, name='add_student'),
     path('student/delete/<int:student_id>/', views.delete_student, name='delete_student'),
-    path('attendance/toggle/<int:student_id>/', views.toggle_attendance, name='toggle_attendance'),
+    path('students/<int:student_id>/toggle-attendance/', views.toggle_attendance, name='toggle_attendance'),
 ]
