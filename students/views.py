@@ -7,6 +7,8 @@ from .models import LeaveRequest, Student
 from .forms import LeaveRequestForm, StudentForm, StudentRegistrationForm
 from django.views.decorators.http import require_POST
 
+
+
 def login(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
@@ -184,3 +186,4 @@ def toggle_attendance(request, student_id):
     
     messages.success(request, f"Attendance status for {student.name} updated to {student.attendance_status}.")
     return redirect('dashboard')
+
