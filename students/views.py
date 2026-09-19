@@ -19,6 +19,8 @@ def login(request):
             auth_login(request, user)
             messages.success(request, f"Welcome back, {user.username}!")
             return redirect('dashboard')
+        else:
+            messages.error(request, "Invalid username or password.")
     else:
         form = AuthenticationForm()
     return render(request, 'students/login.html', {'form': form})
