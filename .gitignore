@@ -4,3 +4,13 @@ venv/
 __pycache__/
 staticfiles/
 .DS_Store
+# Coverage and testing temporary artifacts
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Ignore environment variables and secrets
+.env
+.env.local
+*.env
+db.sqlite3
