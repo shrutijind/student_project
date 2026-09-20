@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.views.decorators.http import require_POST
 from .models import LeaveRequest, Student
 from .forms import LeaveRequestForm, StudentForm, StudentRegistrationForm
-from django.views.decorators.http import require_POST
-
 
 
 def login(request):
@@ -40,7 +39,10 @@ def register(request):
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            messages.success(request, f"Account created successfully! Welcome, {user.username}.")
+            messages.success(
+                request,
+                f"Account created successfully! Welcome, {user.username}."
+            )
             return redirect('dashboard')
     else:
         form = StudentRegistrationForm()
@@ -56,9 +58,11 @@ def dashboard(request):
             'students': students,
             'my_requests': leave_requests
         })
-    
+
     student = get_object_or_404(Student, user=request.user)
-    my_requests = LeaveRequest.objects.filter(student=student).order_by('-start_date')
+    my_requests = LeaveRequest.objects.filter(
+        student=student
+    ).order_by('-start_date')
     return render(request, 'students/parent_dashboard.html', {
         'student': student,
         'my_requests': my_requests
@@ -74,7 +78,10 @@ def apply_leave(request):
             leave = form.save(commit=False)
             leave.student = student
             leave.save()
-            messages.success(request, "Leave request submitted successfully.")
+            messages.success(
+                request,
+                "Leave request submitted successfully."
+            )
             return redirect('dashboard')
     else:
         form = LeaveRequestForm()
@@ -84,30 +91,45 @@ def apply_leave(request):
 @login_required
 def edit_leave(request, leave_id):
     leave_request = get_object_or_404(LeaveRequest, id=leave_id)
-    if not request.user.is_staff and leave_request.student.user != request.user:
-        messages.error(request, "You are not authorized to edit this request.")
+    if (not request.user.is_staff and
+            leave_request.student.user != request.user):
+        messages.error(
+            request,
+            "You are not authorized to edit this request."
+        )
         return redirect('dashboard')
-        
+
     if leave_request.status != 'Pending':
-        messages.warning(request, "You cannot edit a request that has already been processed.")
+        messages.warning(
+            request,
+            "You cannot edit a request that has already been processed."
+        )
         return redirect('dashboard')
 
     if request.method == 'POST':
         form = LeaveRequestForm(request.POST, instance=leave_request)
         if form.is_valid():
             form.save()
-            messages.success(request, "Your leave request has been updated successfully!")
+            messages.success(
+                request,
+                "Your leave request has been updated successfully!"
+            )
             return redirect('dashboard')
     else:
         form = LeaveRequestForm(instance=leave_request)
 
-    return render(request, 'students/edit_leave.html', {'form': form, 'leave_request': leave_request})
+    return render(
+        request,
+        'students/edit_leave.html',
+        {'form': form, 'leave_request': leave_request}
+    )
 
 
 @login_required
 def cancel_leave(request, leave_id):
     leave_request = get_object_or_404(LeaveRequest, id=leave_id)
-    if leave_request.student.user == request.user and leave_request.status == 'Pending':
+    if (leave_request.student.user == request.user and
+            leave_request.status == 'Pending'):
         leave_request.delete()
         messages.success(request, "Leave application canceled successfully.")
     else:
@@ -124,22 +146,31 @@ def update_leave_status(request, leave_id, status):
     if status in ['Approved', 'Rejected']:
         leave_request.status = status
         leave_request.save()
-        messages.success(request, f"Leave request status updated to {status}.")
+        messages.success(
+            request,
+            f"Leave request status updated to {status}."
+        )
     return redirect('dashboard')
 
+
 @login_required
-@require_POST 
- # Ensures state changes only happen via POST requests
+@require_POST
 def toggle_attendance(request, student_id):
     if not request.user.is_staff:
         messages.error(request, "Unauthorized access.")
         return redirect('dashboard')
-        
+
     student = get_object_or_404(Student, id=student_id)
-    student.attendance_status = 'Absent' if student.attendance_status == 'Present' else 'Present'
+    student.attendance_status = (
+        'Absent' if student.attendance_status == 'Present' else 'Present'
+    )
     student.save()
-    
-    messages.success(request, f"Attendance status for {student.name} updated.")
+
+    messages.success(
+        request,
+        f"Attendance status for {student.name} updated to "
+        f"{student.attendance_status}."
+    )
     return redirect('dashboard')
 
 
@@ -168,24 +199,3 @@ def delete_student(request, student_id):
     student.delete()
     messages.success(request, "Student profile deleted successfully.")
     return redirect('dashboard')
-
-
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .models import Student
-
-@login_required
-def toggle_attendance(request, student_id):
-    if not request.user.is_staff:
-        messages.error(request, "Unauthorized access.")
-        return redirect('dashboard')
-        
-    student = get_object_or_404(Student, id=student_id)
-    # Flip status between Present and Absent
-    student.attendance_status = 'Absent' if student.attendance_status == 'Present' else 'Present'
-    student.save()
-    
-    messages.success(request, f"Attendance status for {student.name} updated to {student.attendance_status}.")
-    return redirect('dashboard')
-
