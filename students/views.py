@@ -53,10 +53,13 @@ def register(request):
 def dashboard(request):
     if request.user.is_staff:
         students = Student.objects.all()
-        leave_requests = LeaveRequest.objects.all().order_by('-start_date')
+        # Pass 'pending_requests' to match the template variable
+        pending_requests = LeaveRequest.objects.filter(
+            status='Pending'
+        ).order_by('-start_date')
         return render(request, 'students/admin_dashboard.html', {
             'students': students,
-            'my_requests': leave_requests
+            'pending_requests': pending_requests
         })
 
     student = get_object_or_404(Student, user=request.user)
