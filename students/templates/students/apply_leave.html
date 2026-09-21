@@ -22,16 +22,40 @@
                     <div class="mb-3">
                         <label for="id_start_date" class="form-label">Start Date <span class="text-danger">*</span></label>
                         {{ form.start_date }}
+                        {% if form.start_date.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.start_date.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div class="mb-3">
                         <label for="id_end_date" class="form-label">End Date <span class="text-danger">*</span></label>
                         {{ form.end_date }}
+                        {% if form.end_date.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.end_date.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
+
+                    <!-- Live JS duration counter container -->
+                    <div id="leave-duration-display" class="alert alert-info d-none my-3" role="alert"></div>
 
                     <div class="mb-3">
                         <label for="id_reason" class="form-label">Reason for Absence <span class="text-danger">*</span></label>
                         {{ form.reason }}
+                        {% if form.reason.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.reason.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div class="d-flex justify-content-between mt-4">

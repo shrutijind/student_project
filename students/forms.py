@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import LeaveRequest, Student
+from django.utils import timezone
 
 
 class LeaveRequestForm(forms.ModelForm):
@@ -9,10 +10,29 @@ class LeaveRequestForm(forms.ModelForm):
         model = LeaveRequest
         fields = ['start_date', 'end_date', 'reason']
         widgets = {
-            'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'required': True}),
-            'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'required': True}),
-            'reason': forms.Textarea(attrs={'rows': 4, 'class': 'form-control', 'placeholder': 'Reason for leave...', 'required': True}),
+            'start_date': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control', 'required': True}
+            ),
+            'end_date': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control', 'required': True}
+            ),
+            'reason': forms.Textarea(
+                attrs={
+                    'rows': 4,
+                    'class': 'form-control',
+                    'placeholder': 'Reason for leave...',
+                    'required': True
+                }
+            ),
         }
+
+    def clean_start_date(self):
+        start_date = self.cleaned_data.get('start_date')
+        if start_date and start_date < timezone.now().date():
+            raise forms.ValidationError(
+                "Leave start date cannot be in the past."
+            )
+        return start_date
 
     def clean(self):
         cleaned_data = super().clean()
@@ -20,9 +40,10 @@ class LeaveRequestForm(forms.ModelForm):
         end_date = cleaned_data.get('end_date')
 
         if start_date and end_date and end_date < start_date:
-            raise forms.ValidationError("End date cannot be earlier than start date.")
+            raise forms.ValidationError(
+                "End date cannot be earlier than start date."
+            )
         return cleaned_data
-
 
 class StudentForm(forms.ModelForm):
     class Meta:
