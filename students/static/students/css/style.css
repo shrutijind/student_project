@@ -1,0 +1,78 @@
+/* Custom Styles for EduLeave */
+
+/* Smooth scaling variables */
+:root {
+    --eduleave-primary: #0d6efd;
+    --eduleave-bg: #f8f9fa;
+}
+
+body {
+    background-color: var(--eduleave-bg);
+    min-height: 100vh;
+}
+
+/* Base Card Responsiveness */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 0.75rem;
+}
+
+/* --- Mobile First Media Queries --- */
+
+/* Extra Small Screens (Phones, < 576px) */
+@media (max-width: 575.98px) {
+    /* Full-width container padding adjustments */
+    .container, .container-fluid {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    /* Form card padding for tight screens */
+    .card-body {
+        padding: 1.25rem !important;
+    }
+
+    /* Form action buttons stack vertically on mobile */
+    .d-flex.justify-content-between {
+        flex-direction: column-reverse;
+        gap: 0.75rem;
+    }
+
+    .d-flex.justify-content-between .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Responsive typography */
+    h1, .h1 { font-size: 1.75rem; }
+    h3, .h3 { font-size: 1.35rem; }
+    h4, .h4 { font-size: 1.2rem; }
+
+    /* Footer adjustments */
+    footer .container-fluid {
+        text-align: center;
+    }
+}
+
+/* Medium Screens (Tablets, 576px to 991px) */
+@media (min-width: 576px) and (max-width: 991.98px) {
+    .card-body {
+        padding: 1.75rem !important;
+    }
+}
+
+/* Large Screens (Desktops, >= 992px) */
+@media (min-width: 992px) {
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+    }
+}
+
+/* Touch Device Optimization */
+@media (hover: none) {
+    /* Keep inputs and buttons large enough for touch targets (44px minimum) */
+    .btn, .form-control, .form-select {
+        min-height: 44px;
+    }
+}
