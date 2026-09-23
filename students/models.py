@@ -1,6 +1,3 @@
-
-
-# Create your models here.
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -18,6 +15,12 @@ class Student(models.Model):
 
     def __str__(self):
         return f"{self.roll_number} - {self.name}"
+
+    def delete(self, *args, **kwargs):
+        user = self.user
+        super().delete(*args, **kwargs)  # Delete the Student record first
+        if user:
+            user.delete()  # Automatically delete the linked User account
 
 
 class LeaveRequest(models.Model):
