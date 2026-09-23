@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.functions import Lower
 
 class Student(models.Model):
     STATUS_CHOICES = [
@@ -12,6 +13,8 @@ class Student(models.Model):
     roll_number = models.CharField(max_length=20, unique=True)
     grade_level = models.CharField(max_length=20)
     attendance_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Present')
+    class Meta:
+        ordering = [Lower('name')]  #  Case-insensitive A-Z sorting
 
     def __str__(self):
         return f"{self.roll_number} - {self.name}"
