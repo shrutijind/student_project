@@ -179,17 +179,24 @@ def toggle_attendance(request, student_id):
 
 @login_required
 def add_student(request):
+    # 1. Access Control: Restrict to staff members
     if not request.user.is_staff:
         messages.error(request, "Unauthorized access.")
         return redirect('dashboard')
+    
+    # 2. Handle Form Submission
     if request.method == 'POST':
         form = StudentForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, "New student added successfully.")
             return redirect('dashboard')
+        else:
+            # Displays generic feedback if form validation fails
+            messages.error(request, "Please correct the errors below.")
     else:
         form = StudentForm()
+    
     return render(request, 'students/add_student.html', {'form': form})
 
 

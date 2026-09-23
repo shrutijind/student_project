@@ -45,24 +45,48 @@ class LeaveRequestForm(forms.ModelForm):
             )
         return cleaned_data
 
+
 class StudentForm(forms.ModelForm):
+    """
+    Simplified Student creation form.
+    Only requires name, roll_number, and grade_level.
+    """
     class Meta:
         model = Student
-        fields = ['user', 'name', 'roll_number', 'grade_level', 'attendance_status']
+        fields = ['name', 'roll_number', 'grade_level']
         widgets = {
-            'user': forms.Select(attrs={'class': 'form-select'}),
-            'name': forms.TextInput(attrs={'class': 'form-control', 'required': True, 'placeholder': 'Full Name'}),
-            'roll_number': forms.TextInput(attrs={'class': 'form-control', 'required': True, 'placeholder': 'Roll Number'}),
-            'grade_level': forms.TextInput(attrs={'class': 'form-control', 'required': True, 'placeholder': 'Grade Level'}),
-            'attendance_status': forms.Select(attrs={'class': 'form-select'}),
+            'name': forms.TextInput(
+                attrs={'class': 'form-control', 'required': True, 'placeholder': 'Full Name'}
+            ),
+            'roll_number': forms.TextInput(
+                attrs={'class': 'form-control', 'required': True, 'placeholder': 'Roll Number'}
+            ),
+            'grade_level': forms.TextInput(
+                attrs={'class': 'form-control', 'required': True, 'placeholder': 'Grade Level'}
+            ),
         }
 
 
 class StudentRegistrationForm(UserCreationForm):
-    first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'}))
-    last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'}))
-    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email Address'}))
-    roll_number = forms.CharField(max_length=20, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Roll Number'}))
+    first_name = forms.CharField(
+        max_length=30, 
+        required=True, 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'})
+    )
+    last_name = forms.CharField(
+        max_length=30, 
+        required=True, 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'})
+    )
+    email = forms.EmailField(
+        required=True, 
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email Address'})
+    )
+    roll_number = forms.CharField(
+        max_length=20, 
+        required=True, 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Roll Number'})
+    )
 
     class Meta(UserCreationForm.Meta):
         model = User
