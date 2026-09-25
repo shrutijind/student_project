@@ -1,8 +1,9 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import LeaveRequest, Student
+from django.contrib.auth.models import User
 from django.utils import timezone
+
+from .models import LeaveRequest, Student
 
 
 class LeaveRequestForm(forms.ModelForm):
@@ -11,17 +12,25 @@ class LeaveRequestForm(forms.ModelForm):
         fields = ['start_date', 'end_date', 'reason']
         widgets = {
             'start_date': forms.DateInput(
-                attrs={'type': 'date', 'class': 'form-control', 'required': True}
+                attrs={
+                    'type': 'date',
+                    'class': 'form-control',
+                    'required': True,
+                }
             ),
             'end_date': forms.DateInput(
-                attrs={'type': 'date', 'class': 'form-control', 'required': True}
+                attrs={
+                    'type': 'date',
+                    'class': 'form-control',
+                    'required': True,
+                }
             ),
             'reason': forms.Textarea(
                 attrs={
                     'rows': 4,
                     'class': 'form-control',
                     'placeholder': 'Reason for leave...',
-                    'required': True
+                    'required': True,
                 }
             ),
         }
@@ -51,41 +60,61 @@ class StudentForm(forms.ModelForm):
     Simplified Student creation form.
     Only requires name, roll_number, and grade_level.
     """
+
     class Meta:
         model = Student
         fields = ['name', 'roll_number', 'grade_level']
         widgets = {
             'name': forms.TextInput(
-                attrs={'class': 'form-control', 'required': True, 'placeholder': 'Full Name'}
+                attrs={
+                    'class': 'form-control',
+                    'required': True,
+                    'placeholder': 'Full Name',
+                }
             ),
-            'roll_number': forms.TextInput(
-                attrs={'class': 'form-control', 'required': True, 'placeholder': 'Roll Number'}
+            'roll_number': forms.NumberInput(
+                attrs={
+                    'class': 'form-control',
+                    'required': True,
+                    'placeholder': 'Roll Number',
+                }
             ),
             'grade_level': forms.TextInput(
-                attrs={'class': 'form-control', 'required': True, 'placeholder': 'Grade Level'}
+                attrs={
+                    'class': 'form-control',
+                    'required': True,
+                    'placeholder': 'Grade Level',
+                }
             ),
         }
 
 
 class StudentRegistrationForm(UserCreationForm):
     first_name = forms.CharField(
-        max_length=30, 
-        required=True, 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'})
+        max_length=30,
+        required=True,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'First Name'}
+        ),
     )
     last_name = forms.CharField(
-        max_length=30, 
-        required=True, 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'})
+        max_length=30,
+        required=True,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Last Name'}
+        ),
     )
     email = forms.EmailField(
-        required=True, 
-        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email Address'})
+        required=True,
+        widget=forms.EmailInput(
+            attrs={'class': 'form-control', 'placeholder': 'Email Address'}
+        ),
     )
-    roll_number = forms.CharField(
-        max_length=20, 
-        required=True, 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Roll Number'})
+    roll_number = forms.IntegerField(
+        required=True,
+        widget=forms.NumberInput(
+            attrs={'class': 'form-control', 'placeholder': 'Roll Number'}
+        ),
     )
 
     class Meta(UserCreationForm.Meta):
@@ -103,13 +132,13 @@ class StudentRegistrationForm(UserCreationForm):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.email = self.cleaned_data['email']
-        
+
         if commit:
             user.save()
             # Automatically create and link the Student profile
             Student.objects.create(
                 user=user,
                 name=f"{user.first_name} {user.last_name}",
-                roll_number=self.cleaned_data['roll_number']
+                roll_number=self.cleaned_data['roll_number'],
             )
         return user

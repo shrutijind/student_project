@@ -1,6 +1,7 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django.db.models.functions import Lower
+
 
 class Student(models.Model):
     STATUS_CHOICES = [
@@ -8,13 +9,18 @@ class Student(models.Model):
         ('Absent', 'Absent'),
     ]
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, null=True, blank=True
+    )
     name = models.CharField(max_length=100)
     roll_number = models.CharField(max_length=20, unique=True)
     grade_level = models.CharField(max_length=20)
-    attendance_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Present')
+    attendance_status = models.CharField(
+        max_length=10, choices=STATUS_CHOICES, default='Present'
+    )
+
     class Meta:
-        ordering = [Lower('name')]  #  Case-insensitive A-Z sorting
+        ordering = [Lower('name')]  # Case-insensitive A-Z sorting
 
     def __str__(self):
         return f"{self.roll_number} - {self.name}"
@@ -33,11 +39,15 @@ class LeaveRequest(models.Model):
         ('Rejected', 'Rejected'),
     ]
 
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='leave_requests')
+    student = models.ForeignKey(
+        Student, on_delete=models.CASCADE, related_name='leave_requests'
+    )
     start_date = models.DateField()
     end_date = models.DateField()
     reason = models.TextField(max_length=250)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    status = models.CharField(
+        max_length=10, choices=STATUS_CHOICES, default='Pending'
+    )
     submitted_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
