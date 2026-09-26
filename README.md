@@ -237,12 +237,9 @@ Tested across multiple viewport sizes using Chrome DevTools:
 
 | User Story | Test | Pass | Result Visible / Action | Screenshot |
 | :--- | :--- | :---: | :--- | :--- |
-| **Add Student** | Submit student form | ✓ | New student named manohar appears sorted alphabetically in list | 
-![Test Screenshot](docs/after.png) |
-| **Toggle Status** | Click Attendance button | ✓ | Status badge toggles between Present & Absent |
- ![Test Screenshot](docs/toggle.png) |
-| **Delete Student** | Click Delete button | ✓ | Student and linked User account removed | 
-![Test Screenshot](docs/DELETE.png) |
+| **Add Student** | Submit student form | ✓ | New student named manohar appears sorted alphabetically in list | ![Test Screenshot](docs/after.png) |
+| **Toggle Status** | Click Attendance button | ✓ | Status badge toggles between Present & Absent |![Test Screenshot](docs/toggle.png) |
+| **Delete Student** | Click Delete button | ✓ | Student and linked User account removed | ![Test Screenshot](docs/delete.png) |
 
 ---
 ### Manual Testing Features
