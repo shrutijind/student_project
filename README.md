@@ -2,13 +2,63 @@
 # EduLeave — Student Leave & Attendance Management System
 
 🚀 **Live Demo:** [https://eduleave-508b4c29de03.herokuapp.com/](https://eduleave-508b4c29de03.herokuapp.com/)
+deve
 
-# Student Directory & Attendance System
+![Responsiveness Screenshots](docs/desktop.png)
 
-Welcome to the Student Directory & Attendance System, a full-stack Django web application designed to help educational institutions track student records, monitor attendance status, and manage student leave requests seamlessly.
+
+
+
+
+## Introduction
+
+**EduLeave** is a Django web application developed by **[Shruti Jindal]** designed to streamline the request, approval, and management process of leave for staff and educators within educational institutions. An employee can submit leave requests, select dates, view dynamic leave duration calculations, and track the status of their submissions. Managers or administrators can review incoming requests, approve or reject them, and maintain full oversight of team availability. It replaces disorganized email chains and paper forms with a centralized, accountable, full CRUD system.
+
+I chose this project idea because tracking leave manually often leads to miscommunications, delayed approvals, and confusion over leave balances. Rebuilding this process as an account-based Django application provides a practical solution to an everyday administrative challenge, while offering a natural, real-world context to implement full CRUD operations, role-based access control, and a robust permissions model.
+
+This is a Full-Stack Capstone Project for the Code Institute AI Augmented Full-Stack Bootcamp.
 
 ---
 
+## UX — The 5 Planes
+
+### 1. Strategy
+
+* **Purpose:** Provide educational staff and administrators with a centralized, transparent platform to request and manage leave, eliminating ad-hoc paper forms or disjointed email threads.
+* **Primary User Needs:**
+  * **Employees/Teachers:** Need a simple, low-friction way to request leave, calculate durations automatically, view real-time request statuses, and cancel pending requests if plans change.
+  * **Managers/Administrators:** Need a clear dashboard to review pending leave requests, check coverage, approve or reject submissions, and manage staff leave records.
+  * **Both:** Require confidence that only authorized users can view, manage, or approve specific leave requests.
+* **Project Goals:**
+  * Build a functional, real-world administrative tool addressing an actual organizational workflow.
+  * Demonstrate full CRUD capabilities, custom role-based permissions (Employee vs. Manager/Admin), and dynamic form validation.
+  * Deliver an accessible, fully responsive web application suitable for desktop and mobile devices.
+
+---
+
+### 2. Scope
+
+* **Features:**
+  * **Leave Request Management:** Create, view, update, and cancel leave requests (with dates, leave types, and optional notes).
+  * **Dynamic Calculations:** Instant JavaScript calculation of leave duration upon selecting start and end dates.
+  * **Role-Aware Navigation:** Context-sensitive navigation bars tailored for Guests, Employees, and Managers.
+  * **Feedback & Notifications:** On-page flash messages and auto-dismissing Bootstrap alert notifications for user actions.
+  * **Custom Error Handling:** Customized 403, 404, and 500 error pages styled consistently with the application's theme.
+
+---
+
+### 3. Structure
+
+* **Information Architecture:**
+  * **Navigation:** `Home` is visible to all visitors. Unauthenticated users see options to `Log In` or `Sign Up`. Authenticated users see their name, assigned role, a link to their `Dashboard` or `Leave Requests`, and a `Log Out` button. Staff members are provided with additional `Admin` links.
+  * **Dashboard / Requests Page:** Displays an overview of active and past leave requests categorized by status (*Pending*, *Approved*, *Rejected*).
+  * **Leave Request Form:** A clean interface allowing users to pick start/end dates, choose a leave type, and view calculated leave durations before submitting.
+* **User Flow:**
+  * **Guest:** Browses the homepage landing view → Registers or logs in to access the system.
+  * **Employee:** Accesses personal dashboard → Submits new leave request with dynamic date validation → Tracks request status → Cancels pending requests if needed.
+  * **Manager/Admin:** Reviews pending staff requests on an administrative dashboard → Approves or rejects submissions with feedback notes → Views site-wide leave schedules.
+
+---
 ## Design & Planning
 
 ### User Stories
@@ -70,12 +120,13 @@ The application uses an intuitive, modern color scheme designed for administrati
 | **Light Neutral** | `#f8f9fa` | Section backgrounds |
 | **White** | `#ffffff` | Cards and content |
 
-![EduLeave Color Scheme](docs/colorscheme.png)![alt text](image.png)
+![EduLeave Color Scheme](docs/colorscheme.png)!
 
 
 ### DataBase Diagram
 
 The application uses PostgreSQL in production and SQLite in development.
+ ![EduLeave ](docs/diag.png)!
 
 
 
@@ -143,22 +194,42 @@ The application was tested across multiple modern browsers to verify UI consiste
 ### Responsiveness
 
 Tested across multiple viewport sizes using Chrome DevTools:
-* **Mobile Small (320px - 480px):** Table converts to horizontal scrollable grid; action buttons collapse cleanly.
-* **Tablet (768px - 1024px):** Full layout rendering without visual truncation.
-* **Desktop (1024px+):** Full multi-column view with optimal spacing.
+* **Mobile Small :** Table converts to horizontal scrollable grid; action buttons collapse cleanly.
+![Responsiveness Screenshots](docs/mobile.png)
+* **Tablet :** Full layout rendering without visual truncation.
+![Responsiveness Screenshots](docs/tab.png)
+* **Desktop :** Full multi-column view with optimal spacing.
 
-![Responsiveness Screenshots](docs/testing/responsiveness.png)
+![Responsiveness Screenshots](docs/desktop.png)
 
 ---
 
 ### Code Validation
 
 * **W3C HTML Validator:** Validated all templates without critical errors.
+![Validation Screenshots](docs/htmlval.png)
+
 * **W3C CSS Validator (Jigsaw):** Passed without errors.
+![Validation Screenshots](docs/css.png)
+
 * **JavaScript Validator (ESLint / JSHint):** Passed without warnings.
+![Validation Screenshots](docs/jssj.png)
+
 * **Python Validation (PEP 8 / Flake8):** All models, views, and custom methods adhere strictly to PEP 8 standards.
 
-![Validation Screenshots](docs/testing/code_validation.png)
+![Validation Screenshots(admin.py)](docs/adminpy.png)
+
+![Validation Screenshots(forms.py)](docs/formspy.png)
+
+![Validation Screenshots(apps.py)](docs/appspy.png)
+
+![Validation Screenshots(views.py)](docs/pep8val.png)
+
+![Validation Screenshots(test.py)](docs/test.png)
+
+![Validation Screenshots(url.py)](docs/url.png)
+
+![Validation Screenshots(model.py)](docs/modelpy.png)
 
 ---
 
@@ -166,20 +237,19 @@ Tested across multiple viewport sizes using Chrome DevTools:
 
 | User Story | Test | Pass | Result Visible / Action | Screenshot |
 | :--- | :--- | :---: | :--- | :--- |
-| **Add Student** | Submit student form | ✓ | New student appears sorted alphabetically in list | ![Test Screenshot](docs/testing/us_add_student.png) |
-| **Toggle Status** | Click Attendance button | ✓ | Status badge toggles between Present & Absent | ![Test Screenshot](docs/testing/us_toggle_status.png) |
-| **Delete Student** | Click Delete button | ✓ | Student and linked User account removed | ![Test Screenshot](docs/testing/us_delete_student.png) |
+| **Add Student** | Submit student form | ✓ | New student named manohar appears sorted alphabetically in list | 
+![Test Screenshot](docs/after.png) |
+| **Toggle Status** | Click Attendance button | ✓ | Status badge toggles between Present & Absent |
+ ![Test Screenshot](docs/toggle.png) |
+| **Delete Student** | Click Delete button | ✓ | Student and linked User account removed | 
+![Test Screenshot](docs/DELETE.png) |
 
 ---
-
 ### Manual Testing Features
 
-| Feature | Action | Status | Description / User Steps | Screenshot |
-| :--- | :--- | :---: | :--- | :--- |
-| **Sorting** | Page Refresh | ✓ | Model `class Meta: ordering = [Lower('name')]` keeps A-Z order regardless of case | ![Feature Test](docs/testing/feat_sort.png) |
-| **Cascade Delete** | Delete Student | ✓ | `Student.delete()` triggers linked `User.delete()` automatically | ![Feature Test](docs/testing/feat_delete.png) |
+| **User Authentication** | Submit Login Form | ✓ | Submitting valid credentials redirects user to Dashboard with a success toast message | ![Feature Test](docs/auth.png) |
 
----
+| **Duration Calculation** | Change Date Inputs | ✓ | Selecting valid start/end dates dynamically calculates total days without page refresh | ![Feature Test](docs/nodays.png) |
 
 ### Bugs
 
@@ -189,41 +259,52 @@ Tested across multiple viewport sizes using Chrome DevTools:
 | Capitalized names ('Apen') appeared before lowercase names ('gulshan') in ordering. | Updated `ordering` in `class Meta` to use `django.db.models.functions.Lower('name')`. | **Fixed** |
 
 ---
-
 ## Deployment
 
-This website is deployed to Heroku from a GitHub repository. The following steps were taken:
+This website was deployed to **Heroku** from a **GitHub** repository. The following steps were taken to complete the deployment:
 
-### Creating Repository on GitHub
-1. Make sure you are signed into GitHub and go to the Code Institute template.
-2. Click on **Use this template** and select **Create a new repository** from the drop-down.
-3. Enter the name for the repository and click **Create repository from template**.
-4. Once created, click the green **Gitpod / Open** button to set up the workspace environment.
+### Creating the GitHub Repository
+1. Logged into my GitHub account and navigated to the project template repository.
+2. Clicked on **Use this template** and selected **Create a new repository** from the drop-down menu.
+3. Entered a unique repository name, set the repository visibility to Public, and clicked **Create repository**.
+4. Cloned the repository to my local development environment in VS Code to build and format the project assets.
 
-### Creating an app on Heroku
-1. Log into your Heroku account.
-2. On the dashboard, click **New** and select **Create new app**.
-3. Enter a unique application name, select your region (Europe), and click **Create app**.
+---
 
-### Create a database
-1. Log into the Code Institute Database Maker (or ElephantSQL).
-2. Submit your email address in input field and submit the form.
-3. Open database link in your email.
-4. Paste database URL in your `DATABASE_URL` variable in `env.py` file and in Heroku config vars.
+### Provisioning the Database
+1.Created a PostgreSQL database using the **Code Institute PostgreSQL Database Maker**.
+2.Entered my email address to receive my database credentials.
+3.Copied the generated `DATABASE_URL` string sent to my email.
+4. I added the database URL to my local `env.py` environment variables file to connect the local Django development environment to the live database:
+   ```python
+   os.environ["DATABASE_URL"] = "your_database_url_here"
 
-### Deploying to Heroku
-1. Head back over to Heroku and click on your app and then go to the **Settings** tab.
-2. On the settings page scroll down to the **Config Vars** section and enter:
-   * `DATABASE_URL`: Your PostgreSQL database URL (set equal to the ElephantSQL / CI Database URL)
-   * `SECRET_KEY`: This can be anything random and secure
-   * `CLOUDINARY_URL`: Set to your Cloudinary URL (if applicable)
-   * `PORT`: `8000`
-3. Scroll to the top and go to the **Deploy** tab, locate the **Deployment method** section, select **GitHub**, and sign into your account.
-4. Below that in the **Search for a repository to connect to** search box, enter the name of your repository that you created on GitHub and click **Connect**.
-5. Once connected, scroll down to **Manual Deploy** and click **Deploy Branch**.
-6. When it has deployed, click the **View app** button below to open your newly deployed application.
+   ### Deployment to Heroku
 
-*Please note that when deploying manually, you will have to deploy after each change you make to your repository.*
+The live application is deployed to **Heroku** from this repository's `main` branch using the following steps:
+
+1. **Created the Heroku App & Database:**
+   * I created a new app in the Heroku Dashboard.
+   * I provisioned a PostgreSQL database via the app's **Resources** tab by adding the **Heroku Postgres** add-on (`heroku-postgresql`).
+
+2. **Configured Environment Variables:**
+   * In the Heroku Dashboard under **Settings → Config Vars**, I set the required configuration keys:
+     * `SECRET_KEY`: A unique, secure Django secret key (kept separate from the local development key).
+     * `DATABASE_URL`: Automatically attached and set by the Heroku Postgres add-on.
+
+3. **Deployed Code to Heroku:**
+   * I pushed the codebase to Heroku's remote repository:
+     ```bash
+     git push heroku main
+     ```
+   * This triggered the build process, which ran `collectstatic` automatically and executed automated database migrations prior to launching via the project's `Procfile`:
+     ```text
+     release: python manage.py migrate --noinput
+     web: gunicorn config.wsgi
+     ```
+
+> **Note on Deployment Workflow:** Pushing code to GitHub (`git push origin main`) does not automatically deploy to Heroku. Running `git push heroku main` is a distinct step required whenever updates need to be reflected on the live site. Static assets (CSS/JS) are served in production using **WhiteNoise**, configured directly inside `config/settings.py`.
+
 
 ---
 
@@ -233,6 +314,13 @@ Generative AI (Gemini) was utilized as an adaptive development assistant through
 * **Refactoring Models:** Assisted in implementing the custom `.delete()` cascade override on the `Student` model to automatically clean up `User` objects.
 * **Query Optimization:** Implemented case-insensitive database sorting via `django.db.models.functions.Lower` inside `class Meta`.
 * **Documentation:** Helped structure manual testing tables, bug logs, and README templates.
+AI (**Gemini** and **ChatGPT**) was used throughout this project for planning, debugging, and pair-programming, guided by my project brief and the Code Institute assessment criteria:
+
+* **Planning:** Assisting with initial project scoping, data modeling, and README structure.
+* **Debugging:** Identifying and resolving code issues, including PEP 8 styling, terminal environment setup, Django messaging regressions, and Heroku deployment errors.
+* **Feature Development:** Assisting with CRUD view permission checks, form date validations, custom JavaScript helpers (date calculations and auto-dismissing alerts), responsive styling, custom error pages (403/404/500), and automated unit tests.
+* **Documentation:** Helping document test cases, project reflections, and GitHub issue tracking.
+
 
 ---
 
@@ -240,3 +328,10 @@ Generative AI (Gemini) was utilized as an adaptive development assistant through
 
 * **Code Institute:** Project template, deployment guidance, and database maker service.
 * **Django Documentation:** Official documentation for custom model methods and field options.
+
+## Acknowledgements
+
+I would like to express my sincere gratitude to the following people who supported me throughout the development of this project:
+
+* **Code Institute Tutor Support, Tim, and Marko:** For their invaluable guidance, technical insights, and continuous support throughout the project.
+* **My Amazing Partner:** For endless inspiration, motivation, and encouragement to help me fulfill my full potential.

@@ -1,4 +1,5 @@
 /* jshint esversion: 6, browser: true */
+/* global bootstrap */
 
 document.addEventListener('DOMContentLoaded', function () {
     const startDateInput = document.getElementById('id_start_date');
