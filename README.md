@@ -274,30 +274,35 @@ This website was deployed to **Heroku** from a **GitHub** repository. The follow
 3.Copied the generated `DATABASE_URL` string sent to my email.
 4. I added the database URL to my local `env.py` environment variables file to connect the local Django development environment to the live database:
    ```python
-   os.environ["DATABASE_URL"] = "your_database_url_here"
+   os.environ["DATABASE_URL"]
 
-   ### Deployment to Heroku
+   ### Heroku Deployment
 
-The live application is deployed to **Heroku** from this repository's `main` branch using the following steps:
+This application was deployed to **Heroku** directly from the repository's `main` branch using the following steps:
 
-1. **Created the Heroku App & Database:**
-   * I created a new app in the Heroku Dashboard.
-   * I provisioned a PostgreSQL database via the app's **Resources** tab by adding the **Heroku Postgres** add-on (`heroku-postgresql`).
+1. **App and Database Creation:**
+   * Created a new application on the Heroku Dashboard.
+   * Provisioned a PostgreSQL database using the **Heroku Postgres** add-on (`heroku-postgresql`) via the **Resources** tab (or CLI).
 
-2. **Configured Environment Variables:**
-   * In the Heroku Dashboard under **Settings → Config Vars**, I set the required configuration keys:
-     * `SECRET_KEY`: A unique, secure Django secret key (kept separate from the local development key).
-     * `DATABASE_URL`: Automatically attached and set by the Heroku Postgres add-on.
+2. **Configuration Variables (Config Vars):**
+   * Navigated to **Settings → Config Vars** on the Heroku Dashboard and configured the environment variables:
+     * `SECRET_KEY`: A unique, secure Django secret key for production (distinct from the local development key).
+     * `DATABASE_URL`: Automatically attached and populated upon provisioning the Postgres add-on.
 
-3. **Deployed Code to Heroku:**
-   * I pushed the codebase to Heroku's remote repository:
+3. **Code Deployment:**
+   * Pushed the codebase to Heroku:
      ```bash
      git push heroku main
      ```
-   * This triggered the build process, which ran `collectstatic` automatically and executed automated database migrations prior to launching via the project's `Procfile`:
+   * This triggered the build process, automatically ran `collectstatic`, and executed database migrations via the project's `Procfile` before launching the application:
      ```text
      release: python manage.py migrate --noinput
      web: gunicorn config.wsgi
+     ```
+
+> **Important Deployment Note:** Pushing code to GitHub (`git push`) does not automatically deploy changes to Heroku. Running `git push heroku main` is a required separate step whenever the repository is updated and changes need to be reflected on the live site.
+> 
+> Static files (CSS/JS) are served in production using **WhiteNoise**, configured in `config/settings.py`.
      ```
 
 > **Note on Deployment Workflow:** Pushing code to GitHub (`git push origin main`) does not automatically deploy to Heroku. Running `git push heroku main` is a distinct step required whenever updates need to be reflected on the live site. Static assets (CSS/JS) are served in production using **WhiteNoise**, configured directly inside `config/settings.py`.
