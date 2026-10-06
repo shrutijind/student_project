@@ -9,10 +9,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fallback-key')
 
-# Set DEBUG to True explicitly for local development debugging
-DEBUG = True
+# SECURITY FIX: Only True if DEVELOPMENT is in environment
+DEBUG = 'DEVELOPMENT' in os.environ
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.herokuapp.com',
+]
 
 # Required Core Django Apps + Custom App
 INSTALLED_APPS = [

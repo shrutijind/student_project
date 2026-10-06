@@ -276,7 +276,7 @@ This website was deployed to **Heroku** from a **GitHub** repository. The follow
    ```python
    os.environ["DATABASE_URL"]
 
-   ### Heroku Deployment
+   Heroku Deployment
 
 This application was deployed to **Heroku** directly from the repository's `main` branch using the following steps:
 
