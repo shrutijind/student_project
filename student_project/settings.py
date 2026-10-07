@@ -6,19 +6,18 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fallback-key')
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY environment variable is not set")
 
-# SECURITY FIX: Only True if DEVELOPMENT is in environment
-DEBUG = 'DEVELOPMENT' in os.environ
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '.herokuapp.com',
-]
+ALLOWED_HOSTS = os.environ.get(
+    "ALLOWED_HOSTS",
+    "localhost,127.0.0.1"
+).split(",")
 
-# Required Core Django Apps + Custom App
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
