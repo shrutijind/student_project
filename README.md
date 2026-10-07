@@ -312,6 +312,7 @@ The production configuration uses:
 ```text
 DEBUG=False
 ALLOWED_HOSTS=eduleave-508b4c29de03.herokuapp.com
+```
 
 
  ## AI Usage
