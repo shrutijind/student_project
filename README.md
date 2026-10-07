@@ -256,61 +256,65 @@ Tested across multiple viewport sizes using Chrome DevTools:
 | Capitalized names ('Apen') appeared before lowercase names ('gulshan') in ordering. | Updated `ordering` in `class Meta` to use `django.db.models.functions.Lower('name')`. | **Fixed** |
 
 ---
+
 ## Deployment
 
-This website was deployed to **Heroku** from a **GitHub** repository. The following steps were taken to complete the deployment:
+This website is deployed to Heroku from the project's GitHub repository. The following steps were taken to deploy the application and configure the production environment.
 
-### Creating the GitHub Repository
-1. Logged into my GitHub account and navigated to the project template repository.
-2. Clicked on **Use this template** and selected **Create a new repository** from the drop-down menu.
-3. Entered a unique repository name, set the repository visibility to Public, and clicked **Create repository**.
-4. Cloned the repository to my local development environment in VS Code to build and format the project assets.
+### Creating Repository on GitHub
 
----
+- The project source code was stored in a GitHub repository.
+- Git and GitHub were used for version control throughout the development of the project.
+- The project's `main` branch contains the code used for the production deployment.
+- Changes to the project were committed to Git and pushed to the GitHub repository.
 
-### Provisioning the Database
-1.Created a PostgreSQL database using the **Code Institute PostgreSQL Database Maker**.
-2.Entered my email address to receive my database credentials.
-3.Copied the generated `DATABASE_URL` string sent to my email.
-4. I added the database URL to my local `env.py` environment variables file to connect the local Django development environment to the live database:
-   ```python
-   os.environ["DATABASE_URL"]
+### Creating an App on Heroku
 
-   Heroku Deployment
+- After creating the GitHub repository, I signed into [Heroku](https://www.heroku.com/).
+- From the Heroku dashboard, I selected **Create new app**.
+- A unique name was provided for the application.
+- The application was created in the **Europe** region.
+- The Heroku application used for this project is:
 
-This application was deployed to **Heroku** directly from the repository's `main` branch using the following steps:
+  `eduleave`
 
-1. **App and Database Creation:**
-   * Created a new application on the Heroku Dashboard.
-   * Provisioned a PostgreSQL database using the **Heroku Postgres** add-on (`heroku-postgresql`) via the **Resources** tab (or CLI).
+- The deployed application is available at:
 
-2. **Configuration Variables (Config Vars):**
-   * Navigated to **Settings → Config Vars** on the Heroku Dashboard and configured the environment variables:
-     * `SECRET_KEY`: A unique, secure Django secret key for production (distinct from the local development key).
-     * `DATABASE_URL`: Automatically attached and populated upon provisioning the Postgres add-on.
+  `https://eduleave-508b4c29de03.herokuapp.com`
 
-3. **Code Deployment:**
-   * Pushed the codebase to Heroku:
-     ```bash
-     git push heroku main
-     ```
-   * This triggered the build process, automatically ran `collectstatic`, and executed database migrations via the project's `Procfile` before launching the application:
-     ```text
-     release: python manage.py migrate --noinput
-     web: gunicorn config.wsgi
-     ```
+### Creating and Configuring the Production Database
 
-> **Important Deployment Note:** Pushing code to GitHub (`git push`) does not automatically deploy changes to Heroku. Running `git push heroku main` is a required separate step whenever the repository is updated and changes need to be reflected on the live site.
-> 
-> Static files (CSS/JS) are served in production using **WhiteNoise**, configured in `config/settings.py`.
-     ```
+- The application uses **PostgreSQL** as the production database.
+- PostgreSQL was provisioned for the Heroku application.
+- Heroku provides the production database connection through the `DATABASE_URL` environment variable.
+- The Django project uses the `dj-database-url` package to read the database URL and configure the database connection.
+- SQLite is used for local development, while PostgreSQL is used when the application is deployed to Heroku.
 
-> **Note on Deployment Workflow:** Pushing code to GitHub (`git push origin main`) does not automatically deploy to Heroku. Running `git push heroku main` is a distinct step required whenever updates need to be reflected on the live site. Static assets (CSS/JS) are served in production using **WhiteNoise**, configured directly inside `config/settings.py`.
+The production database connection is therefore kept outside the source code and is provided through the Heroku environment.
+
+### Configuring Heroku Config Vars
+
+Before deploying the application, the required production environment variables were configured in:
+
+**Heroku Dashboard → Settings → Config Vars**
+
+The following variables are used:
+
+| Config Var | Purpose |
+|---|---|
+| `SECRET_KEY` | Secured secret key |
+| `DEBUG` | Controls Django debug mode |
+| `ALLOWED_HOSTS` | Defines the hosts that are permitted to access the application |
+| `DATABASE_URL` | PostgreSQL database connection provided by Heroku |
+
+The production configuration uses:
+
+```text
+DEBUG=False
+ALLOWED_HOSTS=eduleave-508b4c29de03.herokuapp.com
 
 
----
-
-## AI Usage
+ ## AI Usage
 
 Generative AI (Gemini) was utilized as an adaptive development assistant throughout this project:
 * **Refactoring Models:** Assisted in implementing the custom `.delete()` cascade override on the `Student` model to automatically clean up `User` objects.
